@@ -1,9 +1,10 @@
 #include <iostream>
 using namespace std;
 
-void recvFrom() {
 
-}
 
 int main() {
+  //UDP socket
+  clientSocket = socket(PF_INET, SOCK_DGRAM, 0);
+  configureSetting(IP, portNumber);
 }
