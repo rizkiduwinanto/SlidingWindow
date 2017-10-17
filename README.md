@@ -22,20 +22,21 @@
 
 
 ## Pembagian tugas
-> Sampaikan dalam list pengerjaan untuk setiap mahasiswa. Sebagai contoh: XXXX mengerjakan fungsi YYYY, ZZZZ, dan YYZZ.  
-| NIM | Nama | Tugas |  
-| --- | --- | --- |  
-| 13515006 | M Rizki Duwinanto | Fungsi ... |  
-| 13515078 | Veren Iliana Kurniadi | Fungsi ... |  
-| 13515087 | Aury Nyonata | Fungsi ... |  
+ Sampaikan dalam list pengerjaan untuk setiap mahasiswa. Sebagai contoh: XXXX mengerjakan fungsi YYYY, ZZZZ, dan YYZZ.  
+* 13515006 M Rizki Duwinanto
+	- Fungsi ...
+* 13515078 Veren Iliana Kurniadi
+	- Fungsi ...
+* 13515087 Audry Nyonata
+	- Fungsi ...
 
 
 ## Jawaban Pertanyaan
-1. **Apa yang terjadi jika advertised window yang dikirim bernilai 0? Apa cara untukmenangani hal tersebut? **  
+1. Apa yang terjadi jika advertised window yang dikirim bernilai 0? Apa cara untukmenangani hal tersebut?  
 	Jika receiver mengirim advertised window size bernilai nol berarti receive buffer penuh sehingga sender harus menunggu untuk mengirim data berikutnya. Setelah receiver selesai mengambil data dari receive buffer tersebut, maka receiver akan mengirimkan window size sejumlah data yang berhasil dibaca. Dengan begitu sender dapat melanjutkan pengiriman data.
 
 
-2. **Sebutkan field data yang terdapat TCP Header serta ukurannya, ilustrasikan, dan jelaskan kegunaan dari masing-masing field data tersebut! **
+2. Sebutkan field data yang terdapat TCP Header serta ukurannya, ilustrasikan, dan jelaskan kegunaan dari masing-masing field data tersebut!
 
 ![TCP header](TCPheader.png)
 
