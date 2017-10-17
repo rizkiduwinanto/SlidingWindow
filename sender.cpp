@@ -25,50 +25,45 @@ int main(int argc, char* argv[]) {
     char* IP = argv[4];
     int portNumber = atoi(argv[5]);
     int clientSocket;
-	
-	char buffer[bufferSize];
-	
-	// UDP
-	clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
-	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_port = htons(portNumber);
-	serverAddress.sin_addr.s_addr = inet_addr(IP);
-	memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);  
-	
-	addressSize = sizeof serverAddress;
-	
-	/** OPEN FILE **/
-	FILE *fp;
-	fp = fopen(fileName,"r");
-	
-	/** CEK ERROR **/
-	if (fp == NULL) {
-		cout << "ERROR : file not found" << endl;
-		return 0;
-	}
-	
-	while(1) {
-		/** MASUKKAN FILE KE BUFFER **/
-		int c;
-		int x = 0;
-		while ((c = fgetc(fp)) != EOF && x<bufferSize ) {
-		  buffer[x] = c ;
-		  x++;
-		}
-		
-		cout << "Send to server: "<< buffer << endl;
-		int nBytes = strlen(buffer);
-		cout << "NB " << nBytes << endl;
-	    sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
-		nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
-		cout << "Received from server: "<< buffer << endl;
-		
-		if (feof(fp)){ 
-			fclose(fp); 
-			return 0;
-		}	
-	}
-  }
+    
+    char buffer[bufferSize];
+    
+    // UDP
+    clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(portNumber);
+    serverAddress.sin_addr.s_addr = inet_addr(IP);
+    memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);  
+    
+    addressSize = sizeof serverAddress;
+    
+    /** OPEN FILE **/
+    FILE *fp;
+    fp = fopen(fileName,"r");
+    
+    /** CEK ERROR **/
+    if (fp == NULL) {
+        cout << "ERROR : file not found" << endl;
+    } else {
+        while(!feof(fp)) {
+          /** MASUKKAN FILE KE BUFFER **/
+          int c;
+          int x = 0;
+          while ((c = fgetc(fp)) != EOF && x<bufferSize ) {
+            buffer[x] = c ;
+            x++;
+          }
+          
+          cout << "Send to server: "<< buffer << endl;
+          int nBytes = strlen(buffer);
+          cout << "NB " << nBytes << endl;
+          sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+          nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
+          cout << "Received from server: "<< buffer << endl;
+        }
+        fclose(fp);
+      }
+    }
   return 0;
 }
 
