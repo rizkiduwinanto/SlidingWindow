@@ -37,27 +37,35 @@ int main(int argc, char* argv[]) {
 	
 	addressSize = sizeof serverAddress;
 	
+	/** OPEN FILE **/
+	FILE *fp;
+	fp = fopen(fileName,"r");
+	
+	/** CEK ERROR **/
+	if (fp == NULL) {
+		cout << "ERROR : file not found" << endl;
+		return 0;
+	}
+	
 	while(1) {
-		/** TEMPORARY BUFFER **/
-		FILE *fp;
+		/** MASUKKAN FILE KE BUFFER **/
 		int c;
 		int x = 0;
-		fp = fopen(fileName,"r");
-		if (fp == NULL) {
-			cout << "ERROR : file not found" << endl;
-			return 0;
-		}
-		while (x<bufferSize && (c = fgetc(fp)) != EOF) {
+		while ((c = fgetc(fp)) != EOF && x<bufferSize ) {
 		  buffer[x] = c ;
 		  x++;
 		}
-		if (feof(fp)){ fclose(fp);}
 		
 		cout << "Send to server: "<< buffer << endl;
 		int nBytes = strlen(buffer) + 1;
 	    sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
 		nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
-		cout << "Received from server: "<< buffer << endl;	
+		cout << "Received from server: "<< buffer << endl;
+		
+		if (feof(fp)){ 
+			fclose(fp); 
+			return 0;
+		}	
 	}
   }
   return 0;

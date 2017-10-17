@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
 		cout << "ERROR : cannot create socket" << endl;
 		return 0;
 	}
+	
+	//CONFIGURE
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(portNumber);
     serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -46,8 +48,9 @@ int main(int argc, char* argv[]) {
     addressSize = sizeof serverStorage;
     
     while(1) {
-	int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
-	sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
+		int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
+		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
+		cout << "Received from server: "<< buffer << endl;
 	}
   }
   return 0;
