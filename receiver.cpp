@@ -10,9 +10,9 @@
 #include <arpa/inet.h>
 using namespace std;
 
-struct sockaddr_in serverAddress, clientAddress;
+struct sockaddr_in serverAddress;
 struct sockaddr_storage serverStorage;
-socklen_t addressSize, clientAddressSize;
+socklen_t addressSize;
 
 void configureSetting(int portNumber) {
   serverAddress.sin_family = AF_INET;
@@ -21,7 +21,7 @@ void configureSetting(int portNumber) {
   memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char* argv[]) {
   if (argc != 5) {
     cout << "Usage : ./recvfile​ ​ <filename>​ ​ <windowsize>​ ​ <buffersize>​ ​ <port>";
   } else {
@@ -34,7 +34,14 @@ int main(int argc, char** argv) {
     portNumber = atoi(argv[4]);
     receiverSocket = socket(PF_INET, SOCK_DGRAM, 0);
     configureSetting(portNumber);
-    bind(receiverSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
-
+    char *buffer[256] = {0};
+    bind(receiverSocket,(struct sockaddr*) &serverAddress, sizeof(serverAddress));
+    while(1) {
+      recvfrom(receiverSocket, buffer, bufferSize,0, (struct sockaddr*)&serverAddress, (socklen_t *)sizeof(serverAddress));
+      if (bufferSize>0) {
+        cout << buffer;
+      }
+    }
   }
+  return 0;
 }

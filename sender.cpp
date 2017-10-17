@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
     //UDP socket
     clientSocket = socket(PF_INET, SOCK_DGRAM, 0);
     configureSetting(IP, portNumber);
-    //Init
+    sendto(clientSocket, fileName, strlen(fileName), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
   }
   return 0;
 }
