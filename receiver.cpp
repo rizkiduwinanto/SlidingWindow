@@ -14,34 +14,43 @@ struct sockaddr_in serverAddress;
 struct sockaddr_storage serverStorage;
 socklen_t addressSize;
 
-void configureSetting(int portNumber) {
-  serverAddress.sin_family = AF_INET;
-  serverAddress.sin_port = htons(portNumber);
-  serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-  memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);
-}
-
 int main(int argc, char* argv[]) {
-  if (argc != 5) {
-    cout << "Usage : ./recvfile​ ​ <filename>​ ​ <windowsize>​ ​ <buffersize>​ ​ <port>";
+  if(argc != 6){
+    cout << "Usage : ./receiver <filename> <windowsize> <buffersize> <destination_ip> <destination_port>";
   } else {
-    //INPUT dari recvfile
+    //INPUT dari SendFile
     char* fileName = argv[1];
     int windowSize = atoi(argv[2]);
     int bufferSize = atoi(argv[3]);
-    //UDP socket
-    int receiverSocket, portNumber;
-    portNumber = atoi(argv[4]);
-    receiverSocket = socket(PF_INET, SOCK_DGRAM, 0);
-    configureSetting(portNumber);
-    char *buffer[256] = {0};
-    bind(receiverSocket,(struct sockaddr*) &serverAddress, sizeof(serverAddress));
-    while(1) {
-      recvfrom(receiverSocket, buffer, bufferSize,0, (struct sockaddr*)&serverAddress, (socklen_t *)sizeof(serverAddress));
-      if (bufferSize>0) {
-        cout << buffer;
-      }
-    }
+    char* IP = argv[4];
+    int portNumber = atoi(argv[5]);
+    int clientSocket;
+	
+	fileName = "textfile.txt";
+    windowSize = 1;
+    bufferSize = 256;
+    IP = "127.0.0.1";
+    portNumber = 7891;
+	
+	char buffer[256];
+	
+	// UDP
+	clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
+	serverAddress.sin_family = AF_INET;
+	serverAddress.sin_port = htons(portNumber);
+	serverAddress.sin_addr.s_addr = inet_addr(IP);
+	memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);  
+	
+	addressSize = sizeof serverAddress;
+	
+	while(1) {
+		buffer[0] = 'h';
+		printf("Send to server: %s\n",buffer);
+		int nBytes = strlen(buffer) + 1;
+	    sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+		nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
+		printf("Received from server: %s\n",buffer);
+	}
   }
   return 0;
 }

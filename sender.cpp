@@ -13,29 +13,40 @@ using namespace std;
 struct sockaddr_in serverAddress;
 struct sockaddr_storage serverStorage;
 socklen_t addressSize;
-int clientSocket;
-
-void configureSetting(char* IP, int portNumber) {
-    serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(portNumber);
-    serverAddress.sin_addr.s_addr = inet_addr(IP);
-    memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);
-}
 
 int main(int argc, char* argv[]) {
-  if(argc != 6){
-    cout << "Usage : ./sendfile <filename> <windowsize> <buffersize> <destination_ip> <destination_port>";
+  if (argc != 5) {
+    cout << "Usage : ./sender​ ​ <filename>​ ​ <windowsize>​ ​ <buffersize>​ ​ <port>";
   } else {
-    //INPUT dari SendFile
+    //INPUT dari recvfile
     char* fileName = argv[1];
     int windowSize = atoi(argv[2]);
     int bufferSize = atoi(argv[3]);
-    char* IP = argv[4];
-    int portNumber = atoi(argv[5]);
+    int portNumber = atoi(argv[4]);
+    int udpSocket;
+    
+    fileName="textfile.txt";
+    windowSize = 1;
+    bufferSize = 256;
+    portNumber = 7891;
+    
+    char buffer[bufferSize];
+    
     //UDP socket
-    clientSocket = socket(PF_INET, SOCK_DGRAM, 0);
-    configureSetting(IP, portNumber);
-    sendto(clientSocket, fileName, strlen(fileName), 0, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+    udpSocket = socket(AF_INET, SOCK_DGRAM, 0);
+    serverAddress.sin_family = AF_INET;
+	serverAddress.sin_port = htons(portNumber);
+    serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+    memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);
+    
+    bind(udpSocket,(struct sockaddr*) &serverAddress, sizeof(serverAddress));
+    
+    addressSize = sizeof serverStorage;
+    
+    while(1) {
+	int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
+	sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
+	}
   }
   return 0;
 }
