@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     while(1) {
 		int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
 		ofstream fp;
-		fp.open (fileName, ios_base::app);
+		fp.open (fileName, ios_base::app | ios::binary);
 		int i = 0;
 		while (i<nBytes){
 			fp << buffer[i];
