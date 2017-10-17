@@ -4,4 +4,4 @@ sender: sender.cpp
 receiver: receiver.cpp
 	g++ -o receiver receiver.cpp
 clean:
-	rm -f sender.o receiver.o 
+	rm -f sender receiver sender.o receiver.o 
