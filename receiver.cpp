@@ -38,7 +38,6 @@ int main(int argc, char* argv[]) {
     serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
     memset(serverAddress.sin_zero, '\0', sizeof serverAddress.sin_zero);
     
-    
     //BIND
     if (bind(udpSocket,(struct sockaddr*) &serverAddress, sizeof(serverAddress))) {
 		cout << "ERROR : bind failed" << endl;
@@ -47,10 +46,15 @@ int main(int argc, char* argv[]) {
     
     addressSize = sizeof serverStorage;
     
+    //RECEIVE & WRITE FILE
+	ofstream fp;
+	fp.open (fileName);
     while(1) {
 		int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
-		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
 		cout << "Received from server: "<< buffer << endl;
+		fp << buffer;
+		fp.close();
+		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
 	}
   }
   return 0;

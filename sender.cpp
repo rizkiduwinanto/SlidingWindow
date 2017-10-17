@@ -57,7 +57,8 @@ int main(int argc, char* argv[]) {
 		}
 		
 		cout << "Send to server: "<< buffer << endl;
-		int nBytes = strlen(buffer) + 1;
+		int nBytes = strlen(buffer);
+		cout << "NB " << nBytes << endl;
 	    sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
 		nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
 		cout << "Received from server: "<< buffer << endl;
@@ -70,3 +71,4 @@ int main(int argc, char* argv[]) {
   }
   return 0;
 }
+
