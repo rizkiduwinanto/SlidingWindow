@@ -47,14 +47,18 @@ int main(int argc, char* argv[]) {
     addressSize = sizeof serverStorage;
     
     //RECEIVE & WRITE FILE
+    int stop = 0;
 	ofstream fp;
 	fp.open (fileName);
-    while(1) {
+    while(1 && !stop) {
 		int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
 		cout << "Received from server: "<< buffer << endl;
 		fp << buffer;
-		fp.close();
 		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
+		stop = 1;
+		if (stop){
+			fp.close();
+		}
 	}
   }
   return 0;

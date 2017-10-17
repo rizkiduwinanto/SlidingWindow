@@ -38,32 +38,38 @@ int main(int argc, char* argv[]) {
     addressSize = sizeof serverAddress;
     
     /** OPEN FILE **/
-    FILE *fp;
-    fp = fopen(fileName,"r");
+    ifstream fp;
+    fp.open(fileName);
     
     /** CEK ERROR **/
-    if (fp == NULL) {
+    if (!fp) {
         cout << "ERROR : file not found" << endl;
     } else {
-        while(!feof(fp)) {
-          /** MASUKKAN FILE KE BUFFER **/
-          int c;
-          int x = 0;
-          while ((c = fgetc(fp)) != EOF && x<bufferSize ) {
-            buffer[x] = c ;
-            x++;
-          }
-          
-          cout << "Send to server: "<< buffer << endl;
-          int nBytes = strlen(buffer);
-          cout << "NB " << nBytes << endl;
-          sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
-          nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
-          cout << "Received from server: "<< buffer << endl;
+      char c;
+		  int valid = 1;
+      int x = 0;
+      while(valid) {
+        while (fp.get(c) && x<bufferSize) {
+          buffer[x] = c;
+          cout << c << endl;
+          x++;
         }
-        fclose(fp);
+        int nBytes = x;
+        cout << "NB " << nBytes << endl;
+        cout << "Send to server: "<< buffer << endl;
+        sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+        nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
+        cout << "Received from server: "<< buffer << endl;  
+        if (fp.eof()){
+          valid = 0;
+        } else if (!fp.eof() && x == bufferSize){
+          x = 0;
+          memset(buffer,'\0',sizeof(buffer));
+        }
       }
-    }
+      fp.close();
+   }
+  }
   return 0;
 }
 
