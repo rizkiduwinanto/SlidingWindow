@@ -46,19 +46,24 @@ int main(int argc, char* argv[]) {
     
     addressSize = sizeof serverStorage;
     
+    //CLEAR EXISTING FILE 
+    if( remove(fileName) != 0 ){
+		//do nothing
+	}
+	
     //RECEIVE & WRITE FILE
-    int stop = 0;
-	ofstream fp;
-	fp.open (fileName);
-    while(1 && !stop) {
+    while(1) {
 		int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
-		cout << "Received from server: "<< buffer << endl;
-		fp << buffer;
-		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
-		stop = 1;
-		if (stop){
-			fp.close();
+		ofstream fp;
+		fp.open (fileName, ios_base::app);
+		int i = 0;
+		while (i<nBytes){
+			fp << buffer[i];
+			i++;
 		}
+		cout << "Received by server: "<< buffer << endl;   
+		fp.close();
+		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
 	}
   }
   return 0;

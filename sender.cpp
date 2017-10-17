@@ -56,12 +56,12 @@ int main(int argc, char* argv[]) {
         }
         int nBytes = x;
         cout << "NB " << nBytes << endl;
-        cout << "Send to server: "<< buffer << endl;
         sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
         nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
         cout << "Received from server: "<< buffer << endl;  
         if (fp.eof()){
           valid = 0;
+          sendto(clientSocket,buffer,-1,0,(struct sockaddr *)&serverAddress,addressSize);
         } else if (!fp.eof() && x == bufferSize){
           x = 0;
           memset(buffer,'\0',sizeof(buffer));
