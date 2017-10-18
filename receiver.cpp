@@ -14,6 +14,9 @@ using namespace std;
 struct sockaddr_in serverAddress;
 struct sockaddr_storage serverStorage;
 socklen_t addressSize;
+char buffer[bufferSize];
+
+
 
 int main(int argc, char* argv[]) {
   if (argc != 5) {
@@ -25,7 +28,7 @@ int main(int argc, char* argv[]) {
     int bufferSize = atoi(argv[3]);
     int portNumber = atoi(argv[4]);
     int udpSocket;
-    char buffer[bufferSize];
+
     
     //UDP socket
     if ((udpSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -78,3 +81,4 @@ int main(int argc, char* argv[]) {
   }
   return 0;
 }
+

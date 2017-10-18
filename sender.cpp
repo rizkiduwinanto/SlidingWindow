@@ -14,7 +14,7 @@ using namespace std;
 struct sockaddr_in serverAddress;
 struct sockaddr_storage serverStorage;
 socklen_t addressSize;
-
+Segment msg;
 int main(int argc, char* argv[]) {
   if(argc != 6){
     cout << "Usage : ./sender <filename> <windowsize> <buffersize> <destination_ip> <destination_port>";
@@ -61,14 +61,20 @@ int main(int argc, char* argv[]) {
 
         int j = 0;
         while (j < nBytes) {
-          Segment msg;
-          msg.setSequenceNumber(j);
-          msg.setData(buffer[j]);  
-          j++;
-          ACK ack;
+          int count = 0;
           do {
+			
+            msg.setSequenceNumber(j);
+            msg.setData(buffer[j]); 
             sendto(clientSocket,msg.toBytes(),9,0,(struct sockaddr *)&serverAddress,addressSize);
-            cout << msg.toBytes();            
+            cout << msg.toBytes();             
+            j++;
+            count++;
+		  } while (count<windowSize && j < nBytes);
+          count = 0;
+          ACK ack;
+          int count2 = 0;
+          do {
             char ackbytes[7];
             int nack = recvfrom(clientSocket,ackbytes,7,0,NULL,NULL);
             ack.bytes[0] = ackbytes[0];
@@ -80,7 +86,13 @@ int main(int argc, char* argv[]) {
             cout << "ack seqnum : " << ack.getNextSequenceNumber() << endl;
             ack.bytes[6] = ackbytes[6];
             cout << "ack checksum : " << int(ack.getResultSum()) << endl;
-          } while (ack.getResultSum() != 0);
+            if (ack.getResultSum() == 0) {
+				count++;
+			} else { //salah 
+				msg.setData(buffer[ack.getNextSequenceNumber()]);
+				sendto(clientSocket,msg.toBytes(),9,0,(struct sockaddr *)&serverAddress,addressSize);
+			}
+		  } while (count<windowSize && j < nBytes); 
          }
 
         if (fp.eof()){
@@ -90,7 +102,6 @@ int main(int argc, char* argv[]) {
           memset(buffer,'\0',sizeof(buffer));
         }
         x = 0;
-        buffer[x] = c;
        
       } while (nBytes > 0);
       fp.close();
