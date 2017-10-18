@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
           x++;
         }
         nBytes = x;
-        cout << "a" << endl;
+
         cout << "NB " << nBytes << endl;
 
         int j = 0;
@@ -66,11 +66,25 @@ int main(int argc, char* argv[]) {
           msg.setSequenceNumber(seq);
           msg.setData(buffer[j]);  
           j++;
-          sendto(clientSocket,msg.toBytes(),9,0,(struct sockaddr *)&serverAddress,addressSize);
-          cout << msg.toBytes();
+          ACK ack;
+          do {
+            sendto(clientSocket,msg.toBytes(),9,0,(struct sockaddr *)&serverAddress,addressSize);
+            cout << msg.toBytes();            
+            char ackbytes[7];
+            int nack = recvfrom(clientSocket,ackbytes,7,0,NULL,NULL);
+            ack.bytes[0] = ackbytes[0];
+            ack.bytes[1] = ackbytes[1];
+            ack.bytes[2] = ackbytes[2];
+            ack.bytes[3] = ackbytes[3];
+            ack.bytes[4] = ackbytes[4];
+            ack.bytes[5] = ackbytes[5];
+            cout << "ack seqnum : " << ack.getNextSequenceNumber() << endl;
+            ack.bytes[6] = ackbytes[6];
+            cout << "ack checksum : " << int(ack.getResultSum()) << endl;
+          } while (ack.getResultSum() != 0);
+           seq++;       
         }
 
-        nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
         // cout << "Received from server: "<< buffer << endl;  
         if (fp.eof()){
 			     // do nothing
@@ -80,7 +94,7 @@ int main(int argc, char* argv[]) {
         }
         x = 0;
         buffer[x] = c;
-        seq++;
+       
       } while (nBytes > 0);
       fp.close();
    }

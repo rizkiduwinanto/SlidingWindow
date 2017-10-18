@@ -36,6 +36,20 @@ char ACK::calculateChecksum() {
   return (negation & 0xFF);
 }
 
+char ACK::getResultSum() {
+  char sum = 0;
+  for (int i=0; i<length-1; i++) {
+    sum += bytes[i];
+  }
+  sum += getChecksum();
+  char negation = -sum;
+  return (negation & 0xFF);
+}
+
+char ACK::getChecksum(){
+  return calculateChecksum();
+}
+
 Segment::Segment() {
   bytes = new char[length];
   //SOH
@@ -138,6 +152,12 @@ ACK::ACK() {
   bytes[6] = calculateChecksum();
 }
 
+ACK::ACK(char* buffer) {
+  bytes = new char[length];
+  for (int i=0; i<length; i++) {
+  bytes[i] = buffer[i]; 
+  }
+ }
 
 ACK::ACK(int nextSequenceNumber, char advertisedWindowSize) {
   bytes = new char[length];
@@ -152,4 +172,9 @@ ACK::ACK(int nextSequenceNumber, char advertisedWindowSize) {
   bytes[5] = advertisedWindowSize;
   //calculateChecksum
   bytes[6] = calculateChecksum();
+}
+
+int ACK::getNextSequenceNumber(){
+  int integer = (int)(bytes[1] << 24 | bytes[2] << 16 | bytes[3] << 8 | bytes[4]);
+  return integer;
 }

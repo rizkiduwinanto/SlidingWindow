@@ -15,7 +15,7 @@ class Segment {
     int getSequenceNumber();
     void setData(char data);
     char getData();
-  private:
+
     static const size_t length = 9;
     char * bytes;
     char calculateChecksum();
@@ -25,12 +25,14 @@ class ACK {
   public:
     ACK();
     ACK(int nextSequenceNumber, char advertisedWindowSize);
-    ACK(const char *bytes);
+    ACK(char *bytes);
     int getIntFromACK();
     void printACK();
+    char getChecksum();
+    char getResultSum();
     char* toBytes();
     ~ACK();
-  private:
+    int getNextSequenceNumber();
     static const size_t length = 7;
     char * bytes;
     char calculateChecksum();

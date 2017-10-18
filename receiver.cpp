@@ -53,29 +53,33 @@ int main(int argc, char* argv[]) {
 	}
 	
     //RECEIVE & WRITE FILE
+    int x = 0;
     while(1) {
 		char msgBytes[9];
     	
 		int nBytes = recvfrom(udpSocket,msgBytes,9,0,(struct sockaddr *)&serverStorage, &addressSize);
-		cout << "bisa" << endl;
 		Segment msg(msgBytes);
 
-		ofstream fp;
-		fp.open (fileName, ios_base::app | ios::binary);
-		fp << msg.getData();
-		cout << "Received by server: "<< buffer << endl;   
-		fp.close();
-		buffer[0] = msg.toBytes()[0];
-		buffer[1] = msg.toBytes()[1];
-		buffer[2] = msg.toBytes()[2];
-		buffer[3] = msg.toBytes()[3];
-		buffer[4] = msg.toBytes()[4];
-		buffer[5] = msg.toBytes()[5];
-		buffer[6] = msg.toBytes()[6];
-		buffer[7] = msg.toBytes()[7];
-		buffer[8] = msg.toBytes()[8];
-		buffer[9] = msg.toBytes()[9];
-		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
+		if (msg.getResultSum() != 0) {
+			// do nothing
+			cout << "checksum salah" << endl;
+		} else {
+			ofstream fp;
+			buffer[x] = msg.getData();
+			fp.open (fileName, ios_base::app | ios::binary);
+			fp << msg.getData();
+			//cout << "Received by server: "<< buffer << endl; 
+			fp.close();
+			int y = msg.getSequenceNumber()+1;
+			ACK ack(y,1);
+			cout << "y = " << y << endl;
+			cout << "msg get data " << int(msg.getData()) << endl;
+			//cout << ack.getNextSequenceNumber();
+			//cout << ack.getResultSum() << endl;
+			sendto(udpSocket,ack.toBytes(),7,0,(struct sockaddr *)&serverStorage,addressSize);	
+			x++;
+		}
+		
 	}
   }
   return 0;
