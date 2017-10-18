@@ -5,7 +5,7 @@ class Segment {
   public:
     Segment();
     Segment(int sequenceNumber, char data);
-    Segment(const char *bytes);
+    Segment(char *buffer);
     void printSegment();
     char getChecksum();
     char getResultSum();

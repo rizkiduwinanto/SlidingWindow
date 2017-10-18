@@ -16,8 +16,10 @@ struct sockaddr_storage serverStorage;
 socklen_t addressSize;
 
 void SendOneSegment(int clientSocket, Segment Seg) {
-
+	 sendto(clientSocket,Seg.toBytes(),9,0,(struct sockaddr *)&serverAddress,addressSize);
 }
+
+
 
 int main(int argc, char* argv[]) {
   if(argc != 6){
@@ -66,12 +68,14 @@ int main(int argc, char* argv[]) {
           arrayOfMessage[i].setSequenceNumber(i);
           arrayOfMessage[i].setData(buffer[i]);
         }
-        sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+        //sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+        SendOneSegment(clientSocket,arrayOfMessage[0]);
         nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
         cout << "Received from server: "<< buffer << endl;  
         if (fp.eof()){
           valid = 0;
-          sendto(clientSocket,buffer,-1,0,(struct sockaddr *)&serverAddress,addressSize);
+          //sendto(clientSocket,buffer,-1,0,(struct sockaddr *)&serverAddress,addressSize);
+          SendOneSegment(clientSocket,arrayOfMessage[0]);
         } else if (!fp.eof() && x == bufferSize){
           x = 0;
           memset(buffer,'\0',sizeof(buffer));

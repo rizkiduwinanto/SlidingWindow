@@ -74,6 +74,13 @@ Segment::Segment(int sequenceNumber, char data) {
   bytes[8] = calculateChecksum();
 }
 
+Segment::Segment(char* buffer) {
+  bytes = new char[length];
+  for (int i=0; i<length; i++) {
+	bytes[i] = buffer[i]; 
+	}
+ }
+
 void Segment::printSegment(){
   for (int i=0; i<length; i++){
     cout << hex <<(unsigned int) (bytes[i]) << endl;

@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "data.h"
+
 using namespace std;
 
 struct sockaddr_in serverAddress;
@@ -53,18 +54,20 @@ int main(int argc, char* argv[]) {
 	}
 	
     //RECEIVE & WRITE FILE
+	
     while(1) {
 		int nBytes = recvfrom(udpSocket,buffer,bufferSize,0,(struct sockaddr *)&serverStorage, &addressSize);
+		Segment received(buffer);
 		ofstream fp;
 		fp.open (fileName, ios_base::app | ios::binary);
 		int i = 0;
 		while (i<nBytes){
-			fp << buffer[i];
+			fp << received.getData();
 			i++;
 		}
 		cout << "Received by server: "<< buffer << endl;   
 		fp.close();
-		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
+		//sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
 	}
 
   
