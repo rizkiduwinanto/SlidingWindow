@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "data.h"
 using namespace std;
 
 struct sockaddr_in serverAddress;
@@ -48,24 +49,38 @@ int main(int argc, char* argv[]) {
       char c;
       int x = 0;
       int nBytes = 0;
+      int seq = 0;
       do {
         while (x<bufferSize && fp.get(c)) {
           buffer[x] = c;
-          cout << "X: "<<x << "C: "<<c << endl;
+          //cout << "X: "<<x << "C: "<<c << endl;
           x++;
         }
         nBytes = x;
+        cout << "a" << endl;
         cout << "NB " << nBytes << endl;
-        sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+
+        int j = 0;
+        while (j < nBytes) {
+          Segment msg;
+          msg.setSequenceNumber(seq);
+          msg.setData(buffer[j]);  
+          j++;
+          sendto(clientSocket,msg.toBytes(),9,0,(struct sockaddr *)&serverAddress,addressSize);
+          cout << msg.toBytes();
+        }
+
         nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
         // cout << "Received from server: "<< buffer << endl;  
         if (fp.eof()){
-			// do nothing
+			     // do nothing
+          break;
         } else if (!fp.eof() && x == bufferSize){
           memset(buffer,'\0',sizeof(buffer));
         }
         x = 0;
         buffer[x] = c;
+        seq++;
       } while (nBytes > 0);
       fp.close();
    }
