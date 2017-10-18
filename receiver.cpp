@@ -65,6 +65,7 @@ int main(int argc, char* argv[]) {
 		} else {
 			ofstream fp;
 			fp.open (fileName, ios_base::app | ios::binary);
+			buffer[msg.getSequenceNumber()] = msg.getData();
 			fp << msg.getData();
 			fp.close();
 			int y = msg.getSequenceNumber()+1;

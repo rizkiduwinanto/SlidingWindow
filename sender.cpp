@@ -60,6 +60,7 @@ int main(int argc, char* argv[]) {
         cout << "NB " << nBytes << endl;
 
         int j = 0;
+        seq = 0;
         while (j < nBytes) {
           Segment msg;
           msg.setSequenceNumber(seq);
@@ -85,7 +86,7 @@ int main(int argc, char* argv[]) {
         }
 
         if (fp.eof()){
-			     // do nothing
+		  // do nothing
           break;
         } else if (!fp.eof() && x == bufferSize){
           memset(buffer,'\0',sizeof(buffer));
