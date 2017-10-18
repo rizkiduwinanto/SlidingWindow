@@ -19,16 +19,17 @@
 
 ## Cara kerja sliding window dalam program anda
 > Jelaskan juga fungsi yang terkait dengan sliding window pada program anda dan apa yang dilakukan oleh fungsi tersebut.
+Sliding Window yang terjadi program kami adalah dengan menggunakan window size yang telah diinput dan mengirimkan buffer sesuai windowsize dan menerima ack maksimal sesuai windowsize. Jika buffernya masih kosong maka ack akan mengirim advertisedwindowsize sehingga akan sesuai apa adanya saat pengiriman selanjutnya.
 
 
 ## Pembagian tugas
  Sampaikan dalam list pengerjaan untuk setiap mahasiswa. Sebagai contoh: XXXX mengerjakan fungsi YYYY, ZZZZ, dan YYZZ.  
 * 13515006 M Rizki Duwinanto
-	- Fungsi ...
+	- Fungsi Data.cpp, data.h, membungkus Segmen, tester
 * 13515078 Veren Iliana Kurniadi
-	- Fungsi ...
+	- Fungsi membungkus Segmen, membaca Segmen, tester
 * 13515087 Audry Nyonata
-	- Fungsi ...
+	- Fungsi membuat socket, baca tulis file, tester
 
 
 ## Jawaban Pertanyaan
