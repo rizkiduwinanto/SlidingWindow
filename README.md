@@ -19,17 +19,16 @@
 
 ## Cara kerja sliding window dalam program anda
 > Jelaskan juga fungsi yang terkait dengan sliding window pada program anda dan apa yang dilakukan oleh fungsi tersebut.
-Sliding Window yang terjadi program kami adalah dengan menggunakan window size yang telah diinput dan mengirimkan buffer sesuai windowsize dan menerima ack maksimal sesuai windowsize. Jika buffernya masih kosong maka ack akan mengirim advertisedwindowsize sehingga akan sesuai apa adanya saat pengiriman selanjutnya.
-
+Program sendfile membaca bytes dari file eksternal dan menyimpannya di buffer. Kemudian mengirimkan segmen sejumlah windowsize yang telah diinput dan bersiap menerima ack maksimal sesuai windowsize(segmen berisi header dan data dari buffer). Jika pesan diterima, program recvfile akan mengecek cheksum dari segmen dan mengirimkan ack jika benar. Program recvfile mengisi buffer dengan data dari segmen yang telah diterima dan menyimpannya di file. WindowSize mungkin berubah akibat advertisedwindowsize yang ada pada ack.
 
 ## Pembagian tugas
  Sampaikan dalam list pengerjaan untuk setiap mahasiswa. Sebagai contoh: XXXX mengerjakan fungsi YYYY, ZZZZ, dan YYZZ.  
 * 13515006 M Rizki Duwinanto
-	- Fungsi Data.cpp, data.h, membungkus Segmen, tester
+	- Fungsi Data.cpp, data.h, membungkus Segmen, tester, sliding window
 * 13515078 Veren Iliana Kurniadi
-	- Fungsi membungkus Segmen, membaca Segmen, tester
+	- Fungsi membungkus Segmen, membaca Segmen, tester, sliding window
 * 13515087 Audry Nyonata
-	- Fungsi membuat socket, baca tulis file, tester
+	- Fungsi membuat socket, baca tulis file, tester, sliding window
 
 
 ## Jawaban Pertanyaan
