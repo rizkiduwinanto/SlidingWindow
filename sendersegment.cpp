@@ -8,11 +8,18 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "data.h"
 using namespace std;
 
 struct sockaddr_in serverAddress;
 struct sockaddr_storage serverStorage;
 socklen_t addressSize;
+
+void SendOneSegment(int clientSocket, Segment Seg) {
+	 sendto(clientSocket,Seg.toBytes(),9,0,(struct sockaddr *)&serverAddress,addressSize);
+}
+
+
 
 int main(int argc, char* argv[]) {
   if(argc != 6){
@@ -46,27 +53,36 @@ int main(int argc, char* argv[]) {
         cout << "ERROR : file not found" << endl;
     } else {
       char c;
+		  int valid = 1;
       int x = 0;
-      int nBytes = 0;
-      do {
-        while (x<bufferSize && fp.get(c)) {
+      while(valid) {
+        while (fp.get(c) && x<bufferSize) {
           buffer[x] = c;
-          cout << "X: "<<x << "C: "<<c << endl;
-          x++;
+          x++; 
         }
-        nBytes = x;
+        int nBytes = x;
+        Segment arrayOfMessage[nBytes];
         cout << "NB " << nBytes << endl;
-        sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+        for (int i=0; i<nBytes; i++) {
+          cout << buffer[i];
+          arrayOfMessage[i].setSequenceNumber(i);
+          arrayOfMessage[i].setData(buffer[i]);
+        }
+        //sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
+        for (int i=0; i<nBytes; i++) {
+          SendOneSegment(clientSocket,arrayOfMessage[i]);
+        }
         nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
-        // cout << "Received from server: "<< buffer << endl;  
+        cout << "Received from server: "<< buffer << endl;  
         if (fp.eof()){
-			// do nothing
+          valid = 0;
+          //sendto(clientSocket,buffer,-1,0,(struct sockaddr *)&serverAddress,addressSize);
+          //SendOneSegment(clientSocket,arrayOfMessage[0]);
         } else if (!fp.eof() && x == bufferSize){
+          x = 0;
           memset(buffer,'\0',sizeof(buffer));
         }
-        x = 0;
-        buffer[x] = c;
-      } while (nBytes > 0);
+      }
       fp.close();
    }
   }
