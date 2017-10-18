@@ -64,18 +64,20 @@ int main(int argc, char* argv[]) {
         Segment arrayOfMessage[nBytes];
         cout << "NB " << nBytes << endl;
         for (int i=0; i<nBytes; i++) {
-          cout << buffer[i] << endl;
+          cout << buffer[i];
           arrayOfMessage[i].setSequenceNumber(i);
           arrayOfMessage[i].setData(buffer[i]);
         }
         //sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
-        SendOneSegment(clientSocket,arrayOfMessage[0]);
+        for (int i=0; i<nBytes; i++) {
+          SendOneSegment(clientSocket,arrayOfMessage[i]);
+        }
         nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
         cout << "Received from server: "<< buffer << endl;  
         if (fp.eof()){
           valid = 0;
           //sendto(clientSocket,buffer,-1,0,(struct sockaddr *)&serverAddress,addressSize);
-          SendOneSegment(clientSocket,arrayOfMessage[0]);
+          //SendOneSegment(clientSocket,arrayOfMessage[0]);
         } else if (!fp.eof() && x == bufferSize){
           x = 0;
           memset(buffer,'\0',sizeof(buffer));
