@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
       char c;
       int x = 0;
       int nBytes = 0;
-      int seq = 0;
+
       do {
         while (x<bufferSize && fp.get(c)) {
           buffer[x] = c;
@@ -60,10 +60,9 @@ int main(int argc, char* argv[]) {
         cout << "NB " << nBytes << endl;
 
         int j = 0;
-        seq = 0;
         while (j < nBytes) {
           Segment msg;
-          msg.setSequenceNumber(seq);
+          msg.setSequenceNumber(j);
           msg.setData(buffer[j]);  
           j++;
           ACK ack;
@@ -82,8 +81,7 @@ int main(int argc, char* argv[]) {
             ack.bytes[6] = ackbytes[6];
             cout << "ack checksum : " << int(ack.getResultSum()) << endl;
           } while (ack.getResultSum() != 0);
-           seq++;       
-        }
+         }
 
         if (fp.eof()){
 		  // do nothing
