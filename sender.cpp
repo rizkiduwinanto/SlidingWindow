@@ -53,7 +53,6 @@ int main(int argc, char* argv[]) {
       do {
         while (x<bufferSize && fp.get(c)) {
           buffer[x] = c;
-          //cout << "X: "<<x << "C: "<<c << endl;
           x++;
         }
         nBytes = x;
@@ -85,7 +84,6 @@ int main(int argc, char* argv[]) {
            seq++;       
         }
 
-        // cout << "Received from server: "<< buffer << endl;  
         if (fp.eof()){
 			     // do nothing
           break;

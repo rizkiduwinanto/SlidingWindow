@@ -53,7 +53,6 @@ int main(int argc, char* argv[]) {
 	}
 	
     //RECEIVE & WRITE FILE
-    int x = 0;
     while(1) {
 		char msgBytes[9];
     	
@@ -65,19 +64,13 @@ int main(int argc, char* argv[]) {
 			cout << "checksum salah" << endl;
 		} else {
 			ofstream fp;
-			buffer[x] = msg.getData();
 			fp.open (fileName, ios_base::app | ios::binary);
 			fp << msg.getData();
-			//cout << "Received by server: "<< buffer << endl; 
 			fp.close();
 			int y = msg.getSequenceNumber()+1;
 			ACK ack(y,1);
-			cout << "y = " << y << endl;
-			cout << "msg get data " << int(msg.getData()) << endl;
-			//cout << ack.getNextSequenceNumber();
-			//cout << ack.getResultSum() << endl;
+
 			sendto(udpSocket,ack.toBytes(),7,0,(struct sockaddr *)&serverStorage,addressSize);	
-			x++;
 		}
 		
 	}
