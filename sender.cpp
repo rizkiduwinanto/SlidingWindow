@@ -8,11 +8,16 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "data.h"
 using namespace std;
 
 struct sockaddr_in serverAddress;
 struct sockaddr_storage serverStorage;
 socklen_t addressSize;
+
+void SendOneSegment(int clientSocket, Segment Seg) {
+
+}
 
 int main(int argc, char* argv[]) {
   if(argc != 6){
@@ -51,11 +56,16 @@ int main(int argc, char* argv[]) {
       while(valid) {
         while (fp.get(c) && x<bufferSize) {
           buffer[x] = c;
-          cout << c << endl;
-          x++;
+          x++; 
         }
         int nBytes = x;
+        Segment arrayOfMessage[nBytes];
         cout << "NB " << nBytes << endl;
+        for (int i=0; i<nBytes; i++) {
+          cout << buffer[i] << endl;
+          arrayOfMessage[i].setSequenceNumber(i);
+          arrayOfMessage[i].setData(buffer[i]);
+        }
         sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddress,addressSize);
         nBytes = recvfrom(clientSocket,buffer,bufferSize,0,NULL, NULL);
         cout << "Received from server: "<< buffer << endl;  

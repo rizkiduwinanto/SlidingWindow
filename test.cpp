@@ -3,9 +3,9 @@
 using namespace std;
 
 int main() {
-    Segment Seg(2,'3');
+    Segment Seg(2,'P');
     Seg.printSegment();
     cout << "Test!" << endl;
-    cout << hex <<(unsigned int) (Seg.getResultSum()) << endl;
+    cout << Seg.getData() << endl;
     return 0;
 }

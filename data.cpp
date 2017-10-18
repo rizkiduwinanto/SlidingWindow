@@ -37,6 +37,7 @@ char ACK::calculateChecksum() {
 }
 
 Segment::Segment() {
+  bytes = new char[length];
   //SOH
   bytes[0] = SOH;
   //sequenceNumber
@@ -55,6 +56,7 @@ Segment::Segment() {
 }
 
 Segment::Segment(int sequenceNumber, char data) {
+  bytes = new char[length];
   //SOH
   bytes[0] = SOH;
   //sequenceNumber
@@ -78,7 +80,44 @@ void Segment::printSegment(){
   }
 }
 
+char* Segment::toBytes(){
+  return bytes;
+}
+
+Segment::~Segment(){
+  delete [] bytes;
+}
+
+void Segment::setSequenceNumber(int sequenceNumber){
+  bytes[1] = (sequenceNumber >> 24) & 0xFF;
+  bytes[2] = (sequenceNumber >> 16) & 0xFF;
+  bytes[3] = (sequenceNumber >> 8) & 0xFF;
+  bytes[4] = sequenceNumber & 0xFF;
+}
+
+int Segment::getSequenceNumber(){
+  int integer = (int)(bytes[1] << 24 | bytes[2] << 16 | bytes[3] << 8 | bytes[4]);
+  return integer;
+}
+
+void Segment::setData(char data){
+  bytes[6] = data;
+}
+
+char Segment::getData(){
+  return bytes[6];
+}
+
+ACK::~ACK(){
+  delete [] bytes;
+}
+
+char* ACK::toBytes(){
+  return bytes;
+}
+
 ACK::ACK() {
+  bytes = new char[length];
   //ACK
   bytes[0] = ACKID;
   //nextSequenceNumber
@@ -94,6 +133,7 @@ ACK::ACK() {
 
 
 ACK::ACK(int nextSequenceNumber, char advertisedWindowSize) {
+  bytes = new char[length];
   //ACK
   bytes[0] = ACKID;
   //nextSequenceNumber

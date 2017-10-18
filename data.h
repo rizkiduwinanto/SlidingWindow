@@ -9,9 +9,15 @@ class Segment {
     void printSegment();
     char getChecksum();
     char getResultSum();
+    char* toBytes();
+    ~Segment();
+    void setSequenceNumber(int sequenceNumber);
+    int getSequenceNumber();
+    void setData(char data);
+    char getData();
   private:
     static const size_t length = 9;
-    char bytes[9];
+    char * bytes;
     char calculateChecksum();
 };
 
@@ -22,8 +28,10 @@ class ACK {
     ACK(const char *bytes);
     int getIntFromACK();
     void printACK();
+    char* toBytes();
+    ~ACK();
   private:
     static const size_t length = 7;
-    char bytes[7];
+    char * bytes;
     char calculateChecksum();
 };

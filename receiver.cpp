@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "data.h"
 using namespace std;
 
 struct sockaddr_in serverAddress;
@@ -65,6 +66,9 @@ int main(int argc, char* argv[]) {
 		fp.close();
 		sendto(udpSocket,buffer,nBytes,0,(struct sockaddr *)&serverStorage,addressSize);
 	}
+
+  
+
   }
   return 0;
 }
